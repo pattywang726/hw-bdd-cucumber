@@ -4,8 +4,8 @@ Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
+    Movie.create (movie)
   end
-  fail "Unimplemented"
 end
 
 Then /(.*) seed movies should exist/ do | n_seeds |
@@ -18,7 +18,7 @@ end
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.body is the entire content of the page as a string.
-  fail "Unimplemented"
+  expect(page.body.index(e1)).to be < page.body.index(e2)
 end
 
 # Make it easier to express checking or unchecking several boxes at once
@@ -29,10 +29,20 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
-  fail "Unimplemented"
+  rating_Array = rating_list.split(", ")
+  if !uncheck 
+    rating_Array.each do |r_checked| 
+      step "I check \"ratings_#{r_checked}\""
+    end
+  else
+    rating_Array.each do |r_unchecked| 
+      step "I uncheck \"ratings_#{r_unchecked}\""
+    end
+  end
 end
 
 Then /I should see all the movies/ do
-  # Make sure that all the movies in the app are visible in the table
-  fail "Unimplemented"
+  # Counting the number of rows in the HTML table, which minus one (the row for Header), will equal to movie listed. 
+  expect(all("table#movies.table.table-striped.col-md-12 tr").count-1).to eq(Movie.count)
+ 
 end
